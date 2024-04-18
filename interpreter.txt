@@ -1,0 +1,27 @@
+
+    A PYTHON INTERPRETER
+
+Python is a programming language while CPython is the primary
+implementation of Python in C (and Python - yeah, I know).
+
+A Python interpreter: an interpreter in the Python context
+is a generic term. It could mean one of the following:
+i) The Python REPL
+ii) Running the Python code from start to finish.
+
+In this mini-study, the term "INTERPRETER" focuses
+on the final step in the execution of a Python program.
+
+Before the interpreter assumes control; The lexer, parser,
+and compiler acts on the source text to convert it to
+structured code objects that contains instructions that the
+interpreter understands.
+
+NB: Python has a compiling step
+
+The interpreter takes the code object and follows
+the instructions.
+
+NB: The compilation step in Python execution process does
+relatively less work (the interpreter does more) than in a
+compiled language.
