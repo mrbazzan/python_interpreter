@@ -25,3 +25,35 @@ the instructions.
 NB: The compilation step in Python execution process does
 relatively less work (the interpreter does more) than in a
 compiled language.
+
+    BUILDING THE INTERPRETER
+
+Virtual machines are software that emulates physical
+computer. The Python interpreter is a **virtual machine**
+which works like a stack machine: it manipulates stack(s)
+to perform its operations (as opposed to a register machine
+which reads and write to a particular memory locations).
+
+    why?
+
+The interpreter is a bytecode interpreter. It takes
+instruction sets called **bytecode** as input.
+
+The lexer, parser, and compiler generate code objects.
+Each code object contains a set of instructions to be
+executed - bytecode - and other information that the
+interpreter requires.
+
+    code object = bytecode + other information
+
+In building the interpreter, the operations are
+represented as methods in an Interpreter class e.g
+LOAD_VALUE, ADD_TWO_VALUES, PRINT_NUMBER etc. Each of
+these operations act on a stack (represented as a list
+object inside the interpreter).
+
+LOAD_VALUE: adds element to the stack
+ADD_TWO_VALUES: pops two elements from the stack, add them
+                together and add the result to the stack
+PRINT_NUMBER: pops an element from the stack, and prints
+              the element.
