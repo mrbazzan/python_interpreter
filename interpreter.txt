@@ -57,3 +57,19 @@ ADD_TWO_VALUES: pops two elements from the stack, add them
                 together and add the result to the stack
 PRINT_NUMBER: pops an element from the stack, and prints
               the element.
+
+  VARIABLES
+
+Variables require an instruction for storing the value of
+a variable, STORE_NAME; an instruction for retrieving the
+value of a variable, LOAD_NAME; and a mapping of variable
+names to values.
+
+The mapping is achieved by defining an environment instance
+variable - represented as a Python dictionary - on the
+Interpreter class (this is a hack for now).
+
+STORE_NAME: pops an element from the stack and store it on
+            the environment variable with the appropriate key.
+LOAD_NAME: given a key, get the associated value and add it
+           to the stack
