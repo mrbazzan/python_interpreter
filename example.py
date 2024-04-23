@@ -53,3 +53,36 @@ class Interpreter:
             else:
                 method(arg)
 
+
+instruction_sets = [
+{
+    "instructions": [
+        ("LOAD_VALUE", 0),
+        ("LOAD_VALUE", 1),
+        ("ADD_TWO_VALUES", None),
+        ("LOAD_VALUE", 2),
+        ("ADD_TWO_VALUES", None),
+        ("PRINT_ANSWER", None)
+    ],
+    "numbers" : [6, 7, 8]
+},
+{
+    "instructions": [
+        ("LOAD_VALUE", 0),
+        ("STORE_NAME", 0),
+        ("LOAD_VALUE", 1),
+        ("STORE_NAME", 1),
+        ("LOAD_NAME", 0),
+        ("LOAD_NAME", 1),
+        ("ADD_TWO_VALUES", None),
+        ("PRINT_ANSWER", None)],
+    "numbers": [1, 2],
+    "names":   ["a", "b"]
+}
+]
+
+for instruction_set in instruction_sets:
+    interpreter = Interpreter()
+    interpreter.execute(instruction_set)
+    print(interpreter.environment)
+
