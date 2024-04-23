@@ -47,19 +47,9 @@ class Interpreter:
         for instruction_set in instruction_sets:
             instruction, ptr = instruction_set
             arg  = self._parse_ptr(ptr, instruction, code_obj)
-
-            if instruction == "LOAD_VALUE":
-                self.LOAD_VALUE(arg)
-
-            elif instruction == "STORE_NAME":
-                self.STORE_NAME(arg)
-
-            elif instruction == "LOAD_NAME":
-                self.LOAD_NAME(arg)
-
-            elif instruction == "ADD_TWO_VALUES":
-                self.ADD_TWO_VALUES()
-
-            elif instruction == "PRINT_ANSWER":
-                self.PRINT_ANSWER()
+            method = getattr(self, instruction)
+            if arg is None:
+                method()
+            else:
+                method(arg)
 
