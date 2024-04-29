@@ -73,3 +73,48 @@ STORE_NAME: pops an element from the stack and store it on
             the environment variable with the appropriate key.
 LOAD_NAME: given a key, get the associated value and add it
            to the stack
+
+  REAL PYTHON BYTECODE
+
+One byte is used to represent each instruction while
+two bytes are used to represent arguments (names and
+constants).
+
+Python source
+-------------
+
+1 def cond():
+2    x = 3
+3    if x < 5:
+4        return 'yes'
+5    else:
+6        return 'no'
+
+Equivalent bytecode for **cond**
+--------------------------------
+
+  1           0 RESUME                   0
+
+  2           2 LOAD_CONST               1 (3)
+              4 STORE_FAST               0 (x)
+
+  3           6 LOAD_FAST                0 (x)
+              8 LOAD_CONST               2 (5)
+             10 COMPARE_OP               2 (<)
+             14 POP_JUMP_IF_FALSE        1 (to 18)
+
+  4          16 RETURN_CONST             3 ('yes')
+
+  6     >>   18 RETURN_CONST             4 ('no')
+
+Each line has about five(5) columns; and they are
+explained thus:
+
+first column - line of code in Python source
+second column - bytecode index
+third column - instruction itself
+fourth column - argument to the instruction
+fifth column - hint to what the argument means
+
+Conditional and Loops in Python relies on jumping from
+an instruction index to another.
