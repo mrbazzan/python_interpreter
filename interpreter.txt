@@ -118,3 +118,44 @@ fifth column - hint to what the argument means
 
 Conditional and Loops in Python relies on jumping from
 an instruction index to another.
+
+  FRAMES
+
+Python interpreter is a stack machine that perform operations by
+pushing and popping values on the stack.
+
+Frames are another layer of complexity housed in the Python
+interpreter. They are created and destroyed on the fly
+during program execution.
+
+A frame is associated with each module, function call
+and class definition.
+
+    while each frame has a code object associated with it, a
+    code object can have multiple frames.
+
+There are also three types of stacks to consider:
+
+- frames live on the **call stack** (think traceback of exceptions.
+  Each line starting with "File "<stdin>", line number, ..."
+  corresponds to a frame on the call stack).
+
+- **data stack** is the one we've be manipulating in our make-shift
+  interpreter.
+
+- **block stack** is used for certain kinds of control flow,
+  looping and exception handling.
+
+NB: Each frame on the call stack has a DATA and BLOCK stack.
+
+The bytecode instruction, RETURN_VALUE, which corresponds
+to **return** statement in the code is used to pass values
+between frames.
+
+      i) the top value is popped off the data stack on the
+         top frame on the call stack.
+
+     ii) the entire top frame is then popped off.
+
+    iii) the value from (i) above is pushed into the data
+         stack of the next frame.
