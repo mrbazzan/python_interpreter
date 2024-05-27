@@ -159,3 +159,21 @@ between frames.
 
     iii) the value from (i) above is pushed into the data
          stack of the next frame.
+
+
+  EXAMINING THE INTERPRETER
+
+VirtualMachine: It is the highest level of the interpreter.
+It manages the call stack and mapping of instructions to operation.
+Only one instance will be created each time the program is run.
+
+Frame: An instance has one code object and manages the namespaces,
+holds a reference to the calling frame and the last bytecode
+instruction executed
+
+Function: It is used in place of Python function so we can
+control the creation of new frames. Every function call
+creates a new frame.
+
+Block: Wraps the three attributes of blocks (required so our interpreter
+can run real Python code)
