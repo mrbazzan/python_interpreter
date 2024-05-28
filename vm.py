@@ -13,6 +13,22 @@ class VirtualMachine:
         self.return_value = None # The return value passed between frames
         self.exception = None
 
+    def top(self):
+        return self.frame.data_stack[-1]
+
+    def pop(self):
+        return self.frame.data_stack.pop()
+
+    def push(self, *vals):
+        return self.frame.data_stack.extend(vals)
+
+    def popn(self, n):
+        if not n:
+            return []
+        ret = self.frame.data_stack[-n:]
+        self.frame.data_stack[-n:] = []
+        return ret
+
     def push_frame(self, frame):
         self.call_stack.append(frame)
         self.frame = frame
