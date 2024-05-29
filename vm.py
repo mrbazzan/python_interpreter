@@ -1,4 +1,5 @@
 
+import dis
 from obj import Frame, Function
 
 
@@ -56,6 +57,40 @@ class VirtualMachine:
         local_names.update(callargs)
         frame = Frame(code_obj, global_names, local_names, self.frame)
         return frame
+
+    def parse_byte_and_args(self):
+        f = self.frame
+        offset = f.last_instruction
+        byte_code = f.code_obj.co_code[offset]
+        f.last_instruction += 1
+        byte_name = dis.opname[byte_code]
+
+        # check if the bytecode has an argument
+        if byte_code >= dis.HAVE_ARGUMENT:
+            # NB: An instruction with argument is three bytes long; the last
+            # two bytes are the argument
+            arg = f.code_obj.co_code[f.last_instruction:f.last_instruction+2]
+            f.last_instruction += 2
+
+            # resolve the argument's 2 bytes
+            arg_val = arg[0] + (arg[1] * 256)
+
+            if byte_code in dis.hasconst:  # look up a constant
+                arg = f.code_obj.co_consts[arg_val]
+            elif byte_code in dis.hasname:
+                arg = f.code_obj.co_names[arg_val]
+            elif byte_code in dis.haslocal:
+                arg = f.code_obj.co_varnames[arg_val]
+            elif byte_code in dis.hasjrel: # calculate a relative jump
+                arg = f.last_instruction + arg_val
+            else:  # for instructions like BUILD_LIST, POP_JUMP_IF_FALSE
+                arg = arg_val
+
+            argument = [arg]
+        else:
+            argument = []
+
+        return byte_name, argument
 
     def run_frame(self, frame):
         pass
