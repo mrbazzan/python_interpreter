@@ -123,7 +123,27 @@ class VirtualMachine:
         return why
 
     def run_frame(self, frame):
-        pass
+        """
+        Run a frame. Exceptions are raised, the return value is returned.
+        """
+        self.push_frame(frame)
+
+        while True:
+            byte_name, arguments = self.parse_byte_and_args()
+            why = self.dispatch(byte_name, arguments)
+
+            if why:
+                break
+
+        self.pop_frame()
+
+        if why == 'exception':
+            exc, val, tb = self.exception
+            e = exc(val)
+            e.__traceback__ = tb
+            raise e
+
+        return self.return_value
 
     def execute(self, code_obj, global_names=None, local_names=None):
         """Entry point"""
