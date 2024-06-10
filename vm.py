@@ -1,5 +1,6 @@
 
 import dis
+import sys
 from obj import Frame, Function
 
 
@@ -91,6 +92,35 @@ class VirtualMachine:
             argument = []
 
         return byte_name, argument
+
+    def dispatch(self, byte_name, argument):
+        """
+        Get the corresponding method for each bytename.
+        Exceptions are set on the virtual machine
+        """
+
+        # keep state of the interpreter. It is one of:
+        # None, continue, break, exception, return
+        why = None
+        try:
+            bytename_fn = getattr(self, "byte_%s" % byte_name, None)
+            if bytename_fn is None:
+                if byte_name.startswith("UNARY_"):
+                    pass
+                elif byte_name.startswith("BINARY_"):
+                    pass
+                else:
+                    raise VirtualMachineError(
+                        "unsupported bytecode type: %s" % byte_name
+                    )
+            else:
+                why = bytename_fn(*argument)
+        except:
+            # sys.exc_info -> (type, value, traceback)
+            self.exception = sys.exc_info()[:2] + (None, )
+            why = "exception"
+
+        return why
 
     def run_frame(self, frame):
         pass
