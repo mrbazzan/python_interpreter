@@ -50,6 +50,13 @@ class VirtualMachine:
 
     def pop_frame(self):
         self.call_stack.pop()
+
+        # Instead of this "if" block, could we have?
+        # frame = self.call_stack.pop()
+        # self.frame = frame.call_frame
+        # I think we could but frame is not properly collected then
+        # because we still store an instance of a discarded frame, and
+        # I think moreover it is better to use the order in the call stack
         if self.call_stack:
             self.frame = self.call_stack[-1]
         else:
