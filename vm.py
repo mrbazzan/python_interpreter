@@ -44,6 +44,28 @@ class VirtualMachine:
         x, y = self.popn(2)
         self.push(self.BINARY_OPERATORS[op](x, y))
 
+    def byte_LOAD_CONST(self, const):
+        self.push(const)
+
+    def byte_LOAD_NAME(self, name):
+        f = self.frame
+        if name in f.local_names:
+            val = f.local_names[name]
+        elif name in f.global_names:
+            val = f.global_names[name]
+        elif name in f.builtin_names:
+            val = f.builtin_names[name]
+        else:
+            raise NameError("name '%s' is not defined" % name)
+        self.push(val)
+
+    def byte_STORE_NAME(self, name):
+        self.frame.local_names[name] = self.pop()
+
+    def byte_RETURN_VALUE(self):
+        self.return_value = self.pop()
+        return "return"
+
     def push_frame(self, frame):
         self.call_stack.append(frame)
         self.frame = frame
