@@ -47,6 +47,9 @@ class VirtualMachine:
     def byte_LOAD_CONST(self, const):
         self.push(const)
 
+    def byte_POP_TOP(self):
+        self.pop()
+
     def byte_LOAD_NAME(self, name):
         f = self.frame
         if name in f.local_names:
@@ -61,6 +64,14 @@ class VirtualMachine:
 
     def byte_STORE_NAME(self, name):
         self.frame.local_names[name] = self.pop()
+
+    def byte_CALL_FUNCTION(self, arg):
+        _, num_pos_args = divmod(arg, 256)
+        pos_args = self.popn(num_pos_args)
+
+        func = self.pop()
+        retval = func(*pos_args)
+        self.push(retval)
 
     def byte_RETURN_VALUE(self):
         self.return_value = self.pop()
