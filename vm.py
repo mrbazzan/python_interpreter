@@ -1,6 +1,7 @@
 
 import dis
 import sys
+import operator
 from obj import Frame, Function
 
 
@@ -30,6 +31,18 @@ class VirtualMachine:
         ret = self.frame.data_stack[-n:]
         self.frame.data_stack[-n:] = []
         return ret
+
+    BINARY_OPERATORS = {
+        'POWER': pow,
+        'ADD': operator.add,
+        'SUBTRACT': operator.sub,
+        'MULTIPLY': operator.mul,
+        'MODULO': operator.mod,
+    }
+
+    def binaryOperator(self, op):
+        x, y = self.popn(2)
+        self.push(self.BINARY_OPERATORS[op](x, y))
 
     def push_frame(self, frame):
         self.call_stack.append(frame)
@@ -108,7 +121,7 @@ class VirtualMachine:
                 if byte_name.startswith("UNARY_"):
                     pass
                 elif byte_name.startswith("BINARY_"):
-                    pass
+                    self.binaryOperator(byte_name[len("BINARY_"):])
                 else:
                     raise VirtualMachineError(
                         "unsupported bytecode type: %s" % byte_name
