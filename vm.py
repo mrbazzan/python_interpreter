@@ -73,6 +73,17 @@ class VirtualMachine:
         retval = func(*pos_args)
         self.push(retval)
 
+    def byte_MAKE_FUNCTION(self, argc):
+        """
+        :argc: number of keyword argument
+        """
+        name = self.pop()
+        code = self.pop()
+        defaults = self.popn(argc)
+        globs = self.frame.global_names
+        fn = Function(name, code, globs, defaults, None, self)
+        self.push(fn)
+
     def byte_RETURN_VALUE(self):
         self.return_value = self.pop()
         return "return"
