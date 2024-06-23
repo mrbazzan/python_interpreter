@@ -65,6 +65,28 @@ class VirtualMachine:
     def byte_STORE_NAME(self, name):
         self.frame.local_names[name] = self.pop()
 
+    def byte_LOAD_FAST(self, name):
+        if name in self.frame.local_names:
+            val = self.frame.local_names[name]
+        else:
+            raise UnboundLocalError(
+                "local variable '%s' referenced before assignment" % name
+            )
+        self.push(val)
+
+    def byte_STORE_FAST(self, name):
+        self.frame.local_names[name] = self.pop()
+
+    def byte_LOAD_GLOBAL(self, name):
+        f = self.frame
+        if name in f.global_names:
+            val = f.global_names[name]
+        elif name in f.builtin_names:
+            val = f.builtin_names[name]
+        else:
+            raise NameError("global name '%s' is not defined" % name)
+        self.push(val)
+
     def byte_CALL_FUNCTION(self, arg):
         _, num_pos_args = divmod(arg, 256)
         pos_args = self.popn(num_pos_args)
