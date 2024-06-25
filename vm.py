@@ -32,6 +32,10 @@ class VirtualMachine:
         self.frame.data_stack[-n:] = []
         return ret
 
+    def jump(self, ip):
+        """Change the last instruction to ip(instruction pointer)"""
+        self.frame.last_instruction = ip
+
     BINARY_OPERATORS = {
         'POWER': pow,
         'ADD': operator.add,
@@ -43,6 +47,31 @@ class VirtualMachine:
     def binaryOperator(self, op):
         x, y = self.popn(2)
         self.push(self.BINARY_OPERATORS[op](x, y))
+
+    COMPARE_OPERATORS = [
+        operator.lt, operator.le, operator.eq,
+        operator.ne, operator.gt, operator.ge
+    ]
+
+    def byte_COMPARE_OP(self, opnum):
+        x, y = self.popn(2)
+        self.push(self.COMPARE_OPERATORS[opnum](x, y))
+
+    def byte_JUMP_FORWARD(self, jump):
+        self.jump(jump)
+
+    def byte_JUMP_ABSOLUTE(self, jump):
+        self.jump(jump)
+
+    def byte_POP_JUMP_IF_TRUE(self, jump):
+        truthy = self.pop()
+        if truthy:
+            self.jump(jump)
+
+    def byte_POP_JUMP_IF_FALSE(self, jump):
+        truthy = self.pop()
+        if not truthy:
+            self.jump(jump)
 
     def byte_LOAD_CONST(self, const):
         self.push(const)
