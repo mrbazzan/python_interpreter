@@ -2,7 +2,7 @@
 import dis
 import sys
 import operator
-from obj import Frame, Function
+from obj import Block, Frame, Function
 
 
 class VirtualMachineError(Exception):
@@ -35,6 +35,34 @@ class VirtualMachine:
     def jump(self, ip):
         """Change the last instruction to ip(instruction pointer)"""
         self.frame.last_instruction = ip
+
+    def push_block(self, b_type, handler=None):
+        self.frame.block_stack.append(
+            Block(b_type, handler, len(self.frame.data_stack))
+        )
+
+    def pop_block(self):
+        self.frame.block_stack.pop()
+
+    def byte_SETUP_LOOP(self, dest):
+        self.push_block('loop', dest)
+
+    def byte_GET_ITER(self):
+        self.push(iter(self.pop()))
+
+    def byte_FOR_ITER(self, jump):
+        obj = self.top()
+        try:
+            v = next(obj)
+            self.push(v)
+        except StopIteration:
+            # if we have run through the obj, pop the obj
+            # and the jump out of the setup loop
+            self.pop()
+            self.jump(jump)
+
+    def byte_POP_BLOCK(self):
+        self.pop_block()
 
     BINARY_OPERATORS = {
         'POWER': pow,

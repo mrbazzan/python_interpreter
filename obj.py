@@ -2,11 +2,16 @@
 import types
 import inspect
 
+from collections import namedtuple
+
 
 def make_cell(value):
     """Create a real Python closure and grab a cell"""
     fn = (lambda x: lambda: x)(value)
     return fn.__closure__[0]
+
+
+Block = namedtuple("Block", "type, handler, f_ds_height")
 
 
 class Frame:
