@@ -205,6 +205,33 @@ class VirtualMachine:
         frame = Frame(code_obj, global_names, local_names, self.frame)
         return frame
 
+    def unwind_block(self, block):
+        """
+        Unwind the values on the data stack corresponding
+        to a given block.
+
+        Remove the added items in the frame's data stack after
+        the block was setup
+        """
+        while len(self.frame.data_stack) > block.f_ds_height:
+            self.pop()
+
+    def manage_block_stack(self, why):
+        block = self.frame.block_stack[-1]
+
+        self.pop_block()
+        self.unwind_block(block)
+
+        if block.type == 'loop' and why == 'break':
+            why = None
+            self.jump(block.handler)
+            return why
+
+        # If the line below is excluded, this function return None
+        # which can be an issue when RETURN_VALUE instruction is processed
+        # (it should return "return" so the while loop in `run_frame` can stop).
+        return why
+
     def parse_byte_and_args(self):
         f = self.frame
         offset = f.last_instruction
@@ -277,6 +304,12 @@ class VirtualMachine:
         while True:
             byte_name, arguments = self.parse_byte_and_args()
             why = self.dispatch(byte_name, arguments)
+
+            # this is especially useful for when we use the 'break'
+            # statement, there is a need to take care of the values
+            # in the data stack and block stack.
+            while why and frame.block_stack:
+                why = self.manage_block_stack(why)
 
             if why:
                 break
