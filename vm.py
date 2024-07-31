@@ -61,6 +61,9 @@ class VirtualMachine:
             self.pop()
             self.jump(jump)
 
+    def byte_BREAK_LOOP(self):
+        return 'break'
+
     def byte_POP_BLOCK(self):
         self.pop_block()
 
