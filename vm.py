@@ -148,11 +148,17 @@ class VirtualMachine:
         self.push(val)
 
     def byte_CALL_FUNCTION(self, arg):
-        _, num_pos_args = divmod(arg, 256)
+        num_named_args, num_pos_args = divmod(arg, 256)
+
+        named_args = {}
+        for _ in range(num_named_args):
+            k, v = self.popn(2)
+            named_args[k] = v
+
         pos_args = self.popn(num_pos_args)
 
         func = self.pop()
-        retval = func(*pos_args)
+        retval = func(*pos_args, **named_args)
         self.push(retval)
 
     def byte_MAKE_FUNCTION(self, argc):
