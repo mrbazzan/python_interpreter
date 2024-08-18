@@ -41,6 +41,38 @@ interpreter.execute(instruction_set)
 # It outputs `21`
 ```
 
+Real Example
+------------
+> 1
+
+```python
+from vm import VirtualMachine
+
+code = compile("""
+a = 6
+b = 7
+print(a + b)
+""",
+filename="error.log", mode="exec")
+
+VirtualMachine().execute(code)
+```
+
+> 2
+
+```python
+code = compile("""
+def loop(y, x=5):
+    total = 0
+    for i in range(x):
+        total = total + i
+    print(total)
+""",
+filename="error.log", mode="exec")
+
+VirtualMachine().execute(code)
+```
+
 For more information, read **interpreter.txt**
 
 
